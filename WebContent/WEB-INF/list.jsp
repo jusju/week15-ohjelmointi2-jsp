@@ -7,7 +7,6 @@
 <head>
 	<meta charset="utf-8">
 	<title>Shoppinglist</title>
-	<script src="/js/app.js"></script>
 	<link rel="stylesheet" href="/styles/demo.css">
 </head>
 
@@ -16,8 +15,9 @@
 
 	<ul>
 		<c:forEach items="${ shoppingitems }" var="shoppingListItem">
-			<li id="product-${ shoppingListItem.getId() }"><c:out value="${ shoppingListItem.getOstos() }" />
-				<button onclick="removeProduct(${ shoppingListItem.getId() })">Remove</button>
+			<li id="product-${ shoppingListItem.getId() }">
+			<c:out value="${ shoppingListItem.getOstos() }" />
+				<a href="list?id=${ shoppingListItem.getId() }">Remove</a>
 			</li>
 		</c:forEach>
 	</ul>

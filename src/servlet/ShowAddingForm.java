@@ -36,7 +36,7 @@ public class ShowAddingForm extends HttpServlet {
 		JDBCShoppingListItemDao dao = new JDBCShoppingListItemDao();
 		dao.addItem(newItem);
     	
-        resp.sendRedirect("/shoppinglist");
+        resp.sendRedirect("shoppinglist");
     }
     
 }
