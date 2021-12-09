@@ -15,7 +15,7 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 
 	@Override
 	public List<ShoppingListItem> getAllItems() {
-		String URL = "jdbc:sqlite:/opt/shoppinglist.sqlite";
+		String URL = "jdbc:sqlite:/tmp/shoppinglist.sqlite";
 		ResultSet results = null;
 		PreparedStatement statement = null;
 
@@ -64,7 +64,7 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 
 	@Override
 	public ShoppingListItem getItem(long id) {
-		String URL = "jdbc:sqlite:/opt/shoppinglist.sqlite";
+		String URL = "jdbc:sqlite:/tmp/shoppinglist.sqlite";
 		System.out.println("LONGID: " + id);
 		ShoppingListItem item = new ShoppingListItem();
 		Connection connection = null;
@@ -117,7 +117,7 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 
 	@Override
 	public boolean addItem(ShoppingListItem newItem) {
-		String URL = "jdbc:sqlite:/opt/shoppinglist.sqlite";
+		String URL = "jdbc:sqlite:/tmp/shoppinglist.sqlite";
 		Connection connection = null;
 		PreparedStatement statement = null;
 		try {
@@ -148,7 +148,7 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 
 	@Override
 	public boolean removeItem(ShoppingListItem item) {
-		String URL = "jdbc:sqlite:/opt/shoppinglist.sqlite";
+		String URL = "jdbc:sqlite:/tmp/shoppinglist.sqlite";
 		Connection connection = null;
 		PreparedStatement statement = null;
 		ResultSet results = null;

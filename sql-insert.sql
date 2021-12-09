@@ -1,0 +1,1 @@
+INSERT INTO ShoppingListItem(id, title) VALUES(1, 'leipa');
