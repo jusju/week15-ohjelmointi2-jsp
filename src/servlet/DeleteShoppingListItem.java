@@ -24,6 +24,7 @@ public class DeleteShoppingListItem extends HttpServlet {
     	String id = req.getParameter("id");
     	JDBCShoppingListItemDao dao = new JDBCShoppingListItemDao();
     	System.out.println("JUKKA");
+    	System.out.println("TEHDAAN DO GET DELETEA");
     	System.out.println(id);
     	ShoppingListItem item = dao.getItem(Long.parseLong(id));
     	dao.removeItem(item);

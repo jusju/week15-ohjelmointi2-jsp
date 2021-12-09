@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,12 +15,19 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 
 	@Override
 	public List<ShoppingListItem> getAllItems() {
+		String URL = "jdbc:sqlite:/opt/shoppinglist.sqlite";
+		ResultSet results = null;
+		PreparedStatement statement = null;
+
 		List<ShoppingListItem> items = new ArrayList<ShoppingListItem>();
-		Database database = new Database();
-		Connection connection = database.connect();
+
+		Connection connection = null;
+
 		try {
-			PreparedStatement statement = connection.prepareStatement("SELECT * FROM ShoppingListItem");
-			ResultSet results = statement.executeQuery();
+			Class.forName("org.sqlite.JDBC");
+			connection = DriverManager.getConnection(URL);
+			statement = connection.prepareStatement("SELECT * FROM ShoppingListItem");
+			results = statement.executeQuery();
 
 			while (results.next()) {
 				ShoppingListItem item = new ShoppingListItem();
@@ -27,28 +35,49 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 				item.setOstos(results.getString("title"));
 				items.add(item);
 			}
-			results.close();
-			statement.close();
-			connection.close();
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				results.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return items;
 	}
 
 	@Override
 	public ShoppingListItem getItem(long id) {
+		String URL = "jdbc:sqlite:/opt/shoppinglist.sqlite";
 		System.out.println("LONGID: " + id);
 		ShoppingListItem item = new ShoppingListItem();
-		Database database = new Database();
-		Connection connection = database.connect();
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet results = null;
+		
 		int intId = Integer.parseInt((id + ""));
 		System.out.println("JUKKA " + intId);
 		try {
-			PreparedStatement statement = connection.prepareStatement("SELECT * FROM ShoppingListItem");
-			ResultSet results = statement.executeQuery();
+			Class.forName("org.sqlite.JDBC");
+			connection = DriverManager.getConnection(URL);
+			statement = connection.prepareStatement("SELECT * FROM ShoppingListItem");
+			results = statement.executeQuery();
 
 			while (results.next()) {
 				System.out.println("JUKKA " + results.getInt("id"));
@@ -58,23 +87,43 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 					item.setOstos(results.getString("title"));
 				}
 			}
-			results.close();
-			statement.close();
-			connection.close();
+
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		} finally {
+			try {
+				results.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return item;
 	}
 
 	@Override
 	public boolean addItem(ShoppingListItem newItem) {
-		Database database = new Database();
-		Connection connection = database.connect();
+		String URL = "jdbc:sqlite:/opt/shoppinglist.sqlite";
+		Connection connection = null;
+		PreparedStatement statement = null;
 		try {
-			PreparedStatement statement = connection.prepareStatement("INSERT INTO ShoppingListItem(title) VALUES (?)",
+			Class.forName("org.sqlite.JDBC");
+			connection = DriverManager.getConnection(URL);
+			statement = connection.prepareStatement("INSERT INTO ShoppingListItem(title) VALUES (?)",
 					Statement.RETURN_GENERATED_KEYS);
 
 			statement.setString(1, newItem.getOstos());
@@ -99,41 +148,85 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 
 	@Override
 	public boolean removeItem(ShoppingListItem item) {
-		Database database = new Database();
-		Connection connection = database.connect();
+		String URL = "jdbc:sqlite:/opt/shoppinglist.sqlite";
+		Connection connection = null;
+		PreparedStatement statement = null;
+		ResultSet results = null;
+		
 		int deletedId = 0;
 		try {
-			PreparedStatement statement = connection
+			Class.forName("org.sqlite.JDBC");
+			connection = DriverManager.getConnection(URL);
+			statement = connection
 					.prepareStatement("SELECT * FROM ShoppingListItem WHERE title LIKE(?)");
 			statement.setString(1, item.getOstos());
-			ResultSet results = statement.executeQuery();
+			results = statement.executeQuery();
 
 			deletedId = results.getInt("id");
 
-			results.close();
-			statement.close();
-			connection.close();
+
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
-		}
-		database = new Database();
-		connection = database.connect();
+		} 
+
+
+
 		try {
-			PreparedStatement statement = connection.prepareStatement("DELETE FROM ShoppingListItem WHERE id = ?");
+			statement = connection.prepareStatement("DELETE FROM ShoppingListItem WHERE id = ?");
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
 			statement.setInt(1, deletedId);
-			statement.executeUpdate();
-
-			statement.close();
-			connection.close();
-
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return false;
 		}
+		try {
+			System.out.println("KIRJOTELLAAN!!!");
+			statement.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		try {
+			statement.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		try {
+			connection.close();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+			try {
+				results.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				statement.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+
+
+
 		return true;
 	}
 }
