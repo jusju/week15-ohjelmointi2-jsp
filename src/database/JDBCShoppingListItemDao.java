@@ -120,6 +120,7 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 		String URL = "jdbc:sqlite:/tmp/shoppinglist.sqlite";
 		Connection connection = null;
 		PreparedStatement statement = null;
+		ResultSet keys = null;
 		try {
 			Class.forName("org.sqlite.JDBC");
 			connection = DriverManager.getConnection(URL);
@@ -129,7 +130,7 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 			statement.setString(1, newItem.getOstos());
 			statement.executeUpdate();
 
-			ResultSet keys = statement.getGeneratedKeys();
+			keys = statement.getGeneratedKeys();
 			if (keys.next()) {
 				long id = keys.getLong(1);
 
@@ -142,6 +143,25 @@ public class JDBCShoppingListItemDao implements ShoppingListItemDao {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				keys.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			try {
+				statement.close();
+			} catch (SQLException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				connection.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return true;
 	}
